@@ -167,7 +167,7 @@ def main():
     dt = 0.01
     for i in range (10000):
         if i < 1000:
-            I_inj = 10
+            I_inj = 0
         elif i < 5000:
             I_inj = 0
         elif i < 10000:
