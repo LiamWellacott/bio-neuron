@@ -2,6 +2,8 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
+# TODO convert to use solver
+
 #### Parameter settings for resting potential of -65mV sourced from https://neurowiki.case.edu/wiki/HodgkinHuxleyModelParameters
 C = 1.0 # Capacitance 
 initial_Vm = -65.0 # initial potential
@@ -78,7 +80,7 @@ class PotassiumChannel (Channel) :
         super()
         self.n = 0.32 # TODO initial val?
 
-        self.dn_dt_old = 0
+        self.dn_dt_old = self._delta(self.n, self.a_n(initial_Vm), self.b_n(initial_Vm))
 
     def a_n(self, Vm):
         return self._toConducting(Vm, V1, V2, V3)
@@ -100,8 +102,8 @@ class SodiumChannel (Channel) :
         self.m = 0.05 # TODO initial val?
         self.h = 0.6 # TODO 
 
-        self.dm_dt_old = 0
-        self.dh_dt_old = 0
+        self.dm_dt_old = self._delta(self.m, self.a_m(initial_Vm), self.b_m(initial_Vm))
+        self.dh_dt_old = self._delta(self.h, self.a_h(initial_Vm), self.b_h(initial_Vm))
 
     def a_m(self, Vm):
         return self._toConducting(Vm, V7, V8, V9)
@@ -139,7 +141,7 @@ class HHCell:
         self.k = PotassiumChannel()
         self.na = SodiumChannel()
 
-        self.dVm_dt_old = 0
+        self.dVm_dt_old = - self.l.I - self.k.I - self.na.I) / C
 
     def update(self, dt, I_inj):
         '''
